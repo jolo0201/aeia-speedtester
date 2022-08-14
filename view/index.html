@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="refresh"
+		content="60" />
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1.0" />
+	<title>AEIA v1</title>
+    
+    <script>
+        window.onload = function() {
+        
+        var downloadData = [];
+        var uploadData = [];
+        var pingData = [];
+        
+        var chart = new CanvasJS.Chart("chartContainer", {
+            zoomEnabled: true,
+            animationEnabled: true,
+            theme: "light2",
+            title: {
+                text: "AEIA Speedtester v1.0.0"
+            },
+            axisX:{
+                valueFormatString: "hh:mm tt DD MMM",
+                crosshair: {
+                    enabled: true,
+                    snapToDataPoint: true
+                }
+            },
+            axisY: {
+                title: "Mbps",
+                titleFontSize: 24,
+                includeZero: true
+            },
+            legend:{
+                cursor: "pointer",
+                fontSize: 16,
+                itemclick: toggleDataSeries
+            },
+            toolTip:{
+                shared: true
+            },
+            data: [{
+                type: "spline",
+                showInLegend: true,
+                name: "Download",
+                markerType: "square",
+                xValueFormatString: "DD MMM, YYYY",
+                color: "#F08080",
+                dataPoints: downloadData
+            },
+            {
+                type: "spline",
+                showInLegend: true,
+                name: "Upload",
+                lineDashType: "dash",
+                dataPoints: uploadData
+                
+            },
+            {
+                type: "spline",
+                showInLegend: true,
+                name: "Ping",
+                lineDashType: "dot",
+                dataPoints: pingData
+                
+            }]
+        });
+        
+        function addData(data) {
+            console.log(data.data);
+            for (var i = 0; i < data.data.length; i++) {
+                console.log(data.data[i])
+                downloadData.push({
+                    x: new Date(data.data[i].dateStamp),
+                    y: data.data[i].download
+                });
+    
+                uploadData.push({
+                    x: new Date(data.data[i].dateStamp),
+                    y: data.data[i].upload
+                });
+    
+                pingData.push({
+                    x: new Date(data.data[i].dateStamp),
+                    y: data.data[i].ping
+                });
+            }
+            chart.render();
+        
+        }
+
+        function toggleDataSeries(e){
+            if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                e.dataSeries.visible = false;
+            }
+            else{
+                e.dataSeries.visible = true;
+            }
+            chart.render();
+        }
+        
+        $.getJSON("results", addData);
+        
+        }
+        </script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css">
+</head>
+
+
+<body>
+	<center>
+
+    <div id="chartContainer" style="height: 370px; width: 100%; margin-top:200px;"></div>
+    <br>
+    <form method="POST" action="/test">
+		<button type="button" class="btn btn-primary">Check Internet Speed</button>
+	</form>
+    <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"></script>
+	</center>
+</body>
+</html>

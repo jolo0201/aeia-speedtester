@@ -1,0 +1,12 @@
+services:
+   
+  app:
+    build: ./
+    volumes:
+       - ./:/var/www/app
+    ports:
+      - 4000:4000
+    environment:
+      - PORT=3000
+    command:
+       sh -c 'node server.js'
