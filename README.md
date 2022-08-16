@@ -1,7 +1,7 @@
 # AEIA Speedtester
 A simple app for monitoring internet speed test results.
 
-![](img/homepage.png)
+![](img/aeia.png)
 
 ## Running
 You can run the app's server with node:
